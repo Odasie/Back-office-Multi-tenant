@@ -14,6 +14,8 @@ import Auth from "./pages/Auth";
 import Settings from "./pages/Settings";
 import SettingsImports from "./pages/SettingsImports";
 import SalesDashboard from "./pages/SalesDashboard";
+import OperationsDashboard from "./pages/OperationsDashboard";
+import CustomerServiceDashboard from "./pages/CustomerServiceDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
                       <Route path="/settings" element={<Settings />} />
                       <Route path="/settings/imports" element={<SettingsImports />} />
                       <Route path="/dashboard/sales" element={<SalesDashboard />} />
+                      <Route path="/dashboard/operations" element={<OperationsDashboard />} />
+                      <Route path="/dashboard/customer-service" element={<CustomerServiceDashboard />} />
                       <Route path="/dashboard/:department" element={<Index />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
