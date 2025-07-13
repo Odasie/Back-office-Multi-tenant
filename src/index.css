@@ -2,57 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Odasie CRM Design System - Multi-tenant Travel CRM */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    /* Odasie Brand Colors - Base Theme */
+    --primary: 217 91% 60%; /* Blue Primary - Main brand color */
+    --primary-foreground: 0 0% 98%; /* White text on primary */
+    --primary-hover: 217 91% 55%; /* Darker primary for hover states */
+    
+    --secondary: 210 40% 98%; /* Light blue-gray background */
+    --secondary-foreground: 222 84% 4.9%; /* Dark text on secondary */
+    
+    --accent: 210 40% 96%; /* Subtle accent background */
+    --accent-foreground: 222 84% 4.9%; /* Text on accent */
+    
+    /* Status Colors */
+    --success: 142 71% 45%; /* Green for success states */
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%; /* Orange for warnings */
+    --warning-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%; /* Red for destructive actions */
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Base Colors */
+    --background: 0 0% 100%; /* Main background */
+    --foreground: 222 84% 4.9%; /* Main text color */
+    
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 222 84% 4.9%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
+    --popover-foreground: 222 84% 4.9%;
+    
+    --muted: 210 40% 96%; /* Muted backgrounds */
+    --muted-foreground: 215 16% 47%; /* Muted text */
+    
+    --border: 214 32% 91%; /* Border color */
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar colors */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 217 91% 60%;
+    
+    /* CRM Specific Colors */
+    --lead-new: 45 93% 58%; /* Yellow for new leads */
+    --lead-contacted: 217 91% 60%; /* Blue for contacted */
+    --lead-qualified: 142 71% 45%; /* Green for qualified */
+    --lead-converted: 262 83% 58%; /* Purple for converted */
+    --lead-lost: 0 84% 60%; /* Red for lost */
+    
+    /* Revenue Colors */
+    --revenue-high: 142 71% 45%;
+    --revenue-medium: 45 93% 58%;
+    --revenue-low: 0 84% 60%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
+    --gradient-success: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
+    --gradient-dashboard: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(142 71% 45% / 0.1));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -1px hsl(217 91% 60% / 0.06);
+    --shadow-dialog: 0 25px 50px -12px hsl(0 0% 0% / 0.25);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
