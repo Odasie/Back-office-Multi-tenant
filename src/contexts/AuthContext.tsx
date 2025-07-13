@@ -11,6 +11,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, metadata?: any) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
+  verifyEmail: (token: string, type: 'signup' | 'recovery') => Promise<{ error: any; data?: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/auth`;
       
       const { error } = await supabase.auth.signUp({
         email,
@@ -153,7 +154,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithGoogle = async () => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/auth`;
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -181,6 +182,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const verifyEmail = async (token: string, type: 'signup' | 'recovery') => {
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        type,
+        token_hash: token,
+      });
+      
+      if (error) {
+        toast({
+          title: "Email verification failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+      
+      return { error, data };
+    } catch (error: any) {
+      toast({
+        title: "Email verification failed",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+      return { error, data: null };
+    }
+  };
+
   const value = {
     user,
     session,
@@ -189,6 +216,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signUp,
     signOut,
     signInWithGoogle,
+    verifyEmail,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
