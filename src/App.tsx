@@ -19,6 +19,7 @@ import CustomerServiceDashboard from "./pages/CustomerServiceDashboard";
 import FinanceDashboard from "./pages/FinanceDashboard";
 import InsightsDashboard from "./pages/InsightsDashboard";
 import NotFound from "./pages/NotFound";
+import AppLayout from "./components/layout/AppLayout";
 
 const queryClient = new QueryClient();
 
@@ -35,17 +36,23 @@ const App = () => (
                 <CustomerServiceProvider>
                   <BrowserRouter>
                     <Routes>
-                      <Route path="/" element={<Index />} />
+                      {/* Auth route without layout */}
                       <Route path="/auth" element={<Auth />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/settings/imports" element={<SettingsImports />} />
-                      <Route path="/dashboard/sales" element={<SalesDashboard />} />
-                      <Route path="/dashboard/operations" element={<OperationsDashboard />} />
-                      <Route path="/dashboard/customer-service" element={<CustomerServiceDashboard />} />
-                      <Route path="/finance" element={<FinanceDashboard />} />
-                      <Route path="/insights" element={<InsightsDashboard />} />
-                      <Route path="/dashboard/:department" element={<Index />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                      
+                      {/* Protected routes with layout */}
+                      <Route path="/" element={<AppLayout />}>
+                        <Route index element={<Index />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="settings/imports" element={<SettingsImports />} />
+                        <Route path="dashboard/sales" element={<SalesDashboard />} />
+                        <Route path="dashboard/operations" element={<OperationsDashboard />} />
+                        <Route path="dashboard/customer-service" element={<CustomerServiceDashboard />} />
+                        <Route path="finance" element={<FinanceDashboard />} />
+                        <Route path="insights" element={<InsightsDashboard />} />
+                        <Route path="dashboard/:department" element={<Index />} />
+                      </Route>
+                      
+                      {/* 404 catch-all */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </BrowserRouter>

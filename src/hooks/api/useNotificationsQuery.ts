@@ -4,13 +4,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { Notification, NotificationPriority } from '@/types/models';
 import { useUser } from '@/contexts/UserContext';
 import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
+import { ToastAction } from '@/components/ui/toast';
 
 // Sample notifications fallback
 const sampleNotifications: Notification[] = [
   {
     id: 'notif-1',
     user_id: 'sample-user',
+    tenant_id: 'sample-tenant',
     title: 'Lead Follow-up Required',
     message: 'John Smith lead has been waiting for 2 days without contact',
     type: 'timer',
@@ -23,6 +24,7 @@ const sampleNotifications: Notification[] = [
   {
     id: 'notif-2',
     user_id: 'sample-user',
+    tenant_id: 'sample-tenant',
     title: 'Task Handoff',
     message: 'B2B proposal task has been transferred from Sales to Operations',
     type: 'handoff',
@@ -34,6 +36,7 @@ const sampleNotifications: Notification[] = [
   {
     id: 'notif-3',
     user_id: 'sample-user',
+    tenant_id: 'sample-tenant',
     title: 'Payment Overdue',
     message: 'Payment for Bangkok Business Trip booking is 3 days overdue',
     type: 'payment',
@@ -222,9 +225,8 @@ export const useRealtimeNotifications = () => {
               description: newNotification.message,
               variant: newNotification.priority === 'urgent' ? 'destructive' : 'default',
               action: newNotification.action_url ? 
-                React.createElement(Button, {
-                  variant: "outline",
-                  size: "sm",
+                React.createElement(ToastAction, {
+                  altText: "View details",
                   onClick: () => window.location.href = newNotification.action_url!
                 }, "View") : undefined,
             });

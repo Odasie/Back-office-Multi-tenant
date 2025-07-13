@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useRealtimeNotifications } from '@/hooks/api/useNotificationsQuery';
 import { useUser } from '@/contexts/UserContext';
 import { useToast } from '@/hooks/use-toast';
-import { Notification, NotificationPriority } from '@/types/models';
-import { Button } from '@/components/ui/button';
+import type { Notification, NotificationPriority } from '@/types/models';
+import { ToastAction } from '@/components/ui/toast';
 
 interface NotificationSystemConfig {
   enableSound: boolean;
@@ -111,86 +111,68 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
       description: notification.message,
       variant,
       action: notification.action_url ? 
-        React.createElement(Button, {
-          variant: "outline",
-          size: "sm",
+        React.createElement(ToastAction, {
+          altText: "View details",
           onClick: () => window.location.href = notification.action_url!
         }, "View") : undefined,
     });
   }, [systemConfig.enableToasts, toast]);
 
-  useEffect(() => {
-    if (!notifications.length) return;
-
-    const unreadNotifications = notifications
-      .filter(n => !n.is_read)
-      .filter(n => systemConfig.priorityFilter.includes(n.priority))
-      .slice(0, systemConfig.maxDisplayedNotifications);
-
-    unreadNotifications.forEach(notification => {
-      if (['urgent', 'high'].includes(notification.priority)) {
-        playNotificationSound(notification.priority);
-      }
-
-      showDesktopNotification(notification);
-
-      if (['urgent', 'high'].includes(notification.priority)) {
-        showToastNotification(notification);
-      }
-    });
-  }, [notifications, systemConfig, playNotificationSound, showDesktopNotification, showToastNotification]);
-
   const createTimerAlert = useCallback((taskId: string, taskTitle: string, hoursElapsed: number) => {
     return createNotification.mutateAsync({
       user_id: profile?.id || '',
+      tenant_id: profile?.tenant_id || '',
       title: 'Timer Alert',
       message: `Task "${taskTitle}" has been active for ${hoursElapsed} hours`,
       type: 'timer',
-      priority: hoursElapsed > 24 ? 'urgent' : 'high',
+      priority: (hoursElapsed > 24 ? 'urgent' : 'high') as NotificationPriority,
       is_read: false,
       action_url: '/dashboard/operations',
       metadata: { task_id: taskId, hours_elapsed: hoursElapsed },
     });
-  }, [createNotification, profile?.id]);
+  }, [createNotification, profile?.id, profile?.tenant_id]);
 
   const createHandoffAlert = useCallback((entityType: string, entityId: string, fromDept: string, toDept: string) => {
     return createNotification.mutateAsync({
       user_id: profile?.id || '',
+      tenant_id: profile?.tenant_id || '',
       title: 'Handoff Required',
       message: `${entityType} needs to be transferred from ${fromDept} to ${toDept}`,
       type: 'handoff',
-      priority: 'medium',
+      priority: 'medium' as NotificationPriority,
       is_read: false,
       action_url: entityType === 'lead' ? '/dashboard/sales' : '/dashboard/operations',
       metadata: { entity_type: entityType, entity_id: entityId, from_department: fromDept, to_department: toDept },
     });
-  }, [createNotification, profile?.id]);
+  }, [createNotification, profile?.id, profile?.tenant_id]);
 
   const createPaymentAlert = useCallback((bookingId: string, customerName: string, amount: number, daysPastDue: number) => {
     return createNotification.mutateAsync({
       user_id: profile?.id || '',
+      tenant_id: profile?.tenant_id || '',
       title: 'Payment Overdue',
       message: `Payment of $${amount} from ${customerName} is ${daysPastDue} days overdue`,
       type: 'payment',
-      priority: daysPastDue > 7 ? 'urgent' : 'high',
+      priority: (daysPastDue > 7 ? 'urgent' : 'high') as NotificationPriority,
       is_read: false,
       action_url: '/finance',
       metadata: { booking_id: bookingId, amount, days_past_due: daysPastDue },
     });
-  }, [createNotification, profile?.id]);
+  }, [createNotification, profile?.id, profile?.tenant_id]);
 
   const createLeadAlert = useCallback((leadId: string, leadTitle: string, alertType: string, message: string) => {
     return createNotification.mutateAsync({
       user_id: profile?.id || '',
+      tenant_id: profile?.tenant_id || '',
       title: `Lead Alert: ${alertType}`,
       message: `${leadTitle}: ${message}`,
       type: 'lead',
-      priority: alertType.includes('urgent') ? 'urgent' : 'medium',
+      priority: (alertType.includes('urgent') ? 'urgent' : 'medium') as NotificationPriority,
       is_read: false,
       action_url: '/dashboard/sales',
       metadata: { lead_id: leadId, alert_type: alertType },
     });
-  }, [createNotification, profile?.id]);
+  }, [createNotification, profile?.id, profile?.tenant_id]);
 
   const updateConfig = useCallback((newConfig: Partial<NotificationSystemConfig>) => {
     setSystemConfig(prev => ({ ...prev, ...newConfig }));

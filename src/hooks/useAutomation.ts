@@ -139,7 +139,7 @@ export const useAutomation = (config: Partial<AutomationConfig> = {}) => {
         if (now > dueDate) {
           alerts.push({
             id: `overdue-${task.id}`,
-            type: 'deadline',
+            type: 'system',
             priority: 'urgent',
             message: `Task "${task.title}" is overdue`,
             trigger_date: task.due_date,
