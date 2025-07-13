@@ -3,6 +3,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { UserProvider } from "@/contexts/UserContext";
+import { LeadProvider } from "@/contexts/LeadContext";
+import { FinanceProvider } from "@/contexts/FinanceContext";
+import { OperationsProvider } from "@/contexts/OperationsContext";
+import { CustomerServiceProvider } from "@/contexts/CustomerServiceContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -13,13 +19,25 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <UserProvider>
+          <LeadProvider>
+            <FinanceProvider>
+              <OperationsProvider>
+                <CustomerServiceProvider>
+                  <BrowserRouter>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
+                </CustomerServiceProvider>
+              </OperationsProvider>
+            </FinanceProvider>
+          </LeadProvider>
+        </UserProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
