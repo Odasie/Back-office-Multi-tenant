@@ -76,8 +76,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           setTenant(tenantData);
           
           // Apply tenant CSS overrides
-          if (tenantData.css_overrides) {
-            applyTenantStyles(tenantData.css_overrides);
+          if (tenantData.css_overrides && typeof tenantData.css_overrides === 'object') {
+            applyTenantStyles(tenantData.css_overrides as Record<string, any>);
           }
         }
       }

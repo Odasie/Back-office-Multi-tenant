@@ -40,7 +40,7 @@ export const leadOperations = {
       .single();
   },
 
-  async create(leadData: Partial<Lead>) {
+  async create(leadData: any) {
     return supabase
       .from('leads')
       .insert(leadData)
@@ -48,7 +48,7 @@ export const leadOperations = {
       .single();
   },
 
-  async update(id: string, updates: Partial<Lead>) {
+  async update(id: string, updates: any) {
     return supabase
       .from('leads')
       .update(updates)
@@ -62,7 +62,7 @@ export const leadOperations = {
       .eq('id', id);
   },
 
-  async getByDepartment(tenantId: string, department: string) {
+  async getByDepartment(tenantId: string, department: any) {
     return supabase
       .from('leads')
       .select('*')
@@ -93,7 +93,7 @@ export const userOperations = {
       .single();
   },
 
-  async updateProfile(userId: string, updates: Partial<User>) {
+  async updateProfile(userId: string, updates: any) {
     return supabase
       .from('profiles')
       .update(updates)
@@ -108,7 +108,7 @@ export const userOperations = {
       .eq('is_active', true);
 
     if (department) {
-      query = query.eq('department', department);
+      query = query.eq('department', department as any);
     }
 
     return query.order('first_name');
@@ -150,7 +150,7 @@ export const taskOperations = {
     return query.order('created_at', { ascending: false });
   },
 
-  async create(taskData: Partial<Task>) {
+  async create(taskData: any) {
     return supabase
       .from('tasks')
       .insert(taskData)
@@ -158,7 +158,7 @@ export const taskOperations = {
       .single();
   },
 
-  async update(id: string, updates: Partial<Task>) {
+  async update(id: string, updates: any) {
     return supabase
       .from('tasks')
       .update(updates)
@@ -219,7 +219,7 @@ export const ticketOperations = {
     return query.order('created_at', { ascending: false });
   },
 
-  async create(ticketData: Partial<Ticket>) {
+  async create(ticketData: any) {
     return supabase
       .from('tickets')
       .insert(ticketData)
@@ -227,7 +227,7 @@ export const ticketOperations = {
       .single();
   },
 
-  async update(id: string, updates: Partial<Ticket>) {
+  async update(id: string, updates: any) {
     return supabase
       .from('tickets')
       .update(updates)
@@ -302,7 +302,7 @@ export const financialOperations = {
       .eq('id', paymentId);
   },
 
-  async recordPayment(paymentData: Partial<Payment>) {
+  async recordPayment(paymentData: any) {
     return supabase
       .from('payments')
       .insert(paymentData)

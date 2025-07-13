@@ -3,6 +3,7 @@ import type { Database } from '@/integrations/supabase/types';
 // Database types
 export type Tables = Database['public']['Tables'];
 export type Enums = Database['public']['Enums'];
+export type Json = Database['public']['Tables']['tenants']['Row']['css_overrides'];
 
 // Basic types from database
 export type BookingType = Enums['booking_type'];
@@ -17,8 +18,8 @@ export type Department = Enums['department'];
 export interface Tenant {
   id: string;
   name: string;
-  css_overrides: Record<string, any>;
-  settings: Record<string, any>;
+  css_overrides: Json;
+  settings: Json;
   created_at: string;
   updated_at: string;
 }
@@ -238,7 +239,6 @@ export interface KpiData {
     on_time_completion_rate?: number;
     
     // Finance metrics
-    revenue?: number;
     outstanding_payments?: number;
     payment_collection_rate?: number;
     refund_rate?: number;
