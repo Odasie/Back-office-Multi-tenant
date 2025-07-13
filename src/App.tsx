@@ -10,6 +10,9 @@ import { FinanceProvider } from "@/contexts/FinanceContext";
 import { OperationsProvider } from "@/contexts/OperationsContext";
 import { CustomerServiceProvider } from "@/contexts/CustomerServiceContext";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Settings from "./pages/Settings";
+import SettingsImports from "./pages/SettingsImports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +31,10 @@ const App = () => (
                   <BrowserRouter>
                     <Routes>
                       <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/settings/imports" element={<SettingsImports />} />
+                      <Route path="/dashboard/:department" element={<Index />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
