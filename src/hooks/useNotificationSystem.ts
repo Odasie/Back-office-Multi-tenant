@@ -33,7 +33,6 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
   
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
 
-  // Request notification permissions on mount
   useEffect(() => {
     if ('Notification' in window) {
       setNotificationPermission(Notification.permission);
@@ -46,14 +45,12 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
     }
   }, []);
 
-  // Play notification sound
   const playNotificationSound = useCallback((priority: NotificationPriority) => {
     if (!systemConfig.enableSound) return;
 
     try {
       const audio = new Audio();
       
-      // Different sounds for different priorities
       switch (priority) {
         case 'urgent':
           audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp56hVFApGn+DyvmAcBSuIz/LVfzEGIXLX8M5+KgUgi83x3YQ+CRZNq+frrVGODRVAntdxnKfOzqTIzzq+2/LHdyoF';
@@ -72,7 +69,6 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
     }
   }, [systemConfig.enableSound]);
 
-  // Show desktop notification
   const showDesktopNotification = useCallback((notification: Notification) => {
     if (!systemConfig.enableDesktopNotifications || notificationPermission !== 'granted') return;
 
@@ -94,7 +90,6 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
         browserNotification.close();
       };
 
-      // Auto-close after delay based on priority
       const closeDelay = notification.priority === 'urgent' ? 10000 : 
                        notification.priority === 'high' ? 7000 : 5000;
       
@@ -106,7 +101,6 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
     }
   }, [systemConfig.enableDesktopNotifications, notificationPermission]);
 
-  // Show toast notification
   const showToastNotification = useCallback((notification: Notification) => {
     if (!systemConfig.enableToasts) return;
 
@@ -116,19 +110,15 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
       title: notification.title,
       description: notification.message,
       variant,
-      action: notification.action_url ? (
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => window.location.href = notification.action_url!}
-        >
-          View
-        </Button>
-      ) : undefined,
+      action: notification.action_url ? 
+        React.createElement(Button, {
+          variant: "outline",
+          size: "sm",
+          onClick: () => window.location.href = notification.action_url!
+        }, "View") : undefined,
     });
   }, [systemConfig.enableToasts, toast]);
 
-  // Process incoming notifications
   useEffect(() => {
     if (!notifications.length) return;
 
@@ -138,22 +128,18 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
       .slice(0, systemConfig.maxDisplayedNotifications);
 
     unreadNotifications.forEach(notification => {
-      // Play sound for high-priority notifications
       if (['urgent', 'high'].includes(notification.priority)) {
         playNotificationSound(notification.priority);
       }
 
-      // Show desktop notification
       showDesktopNotification(notification);
 
-      // Show toast for urgent/high priority
       if (['urgent', 'high'].includes(notification.priority)) {
         showToastNotification(notification);
       }
     });
   }, [notifications, systemConfig, playNotificationSound, showDesktopNotification, showToastNotification]);
 
-  // Notification creation helpers
   const createTimerAlert = useCallback((taskId: string, taskTitle: string, hoursElapsed: number) => {
     return createNotification.mutateAsync({
       user_id: profile?.id || '',
@@ -206,12 +192,10 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
     });
   }, [createNotification, profile?.id]);
 
-  // Update system configuration
   const updateConfig = useCallback((newConfig: Partial<NotificationSystemConfig>) => {
     setSystemConfig(prev => ({ ...prev, ...newConfig }));
   }, []);
 
-  // Get notification statistics
   const getNotificationStats = useCallback(() => {
     const unreadCount = notifications.filter(n => !n.is_read).length;
     const urgentCount = notifications.filter(n => !n.is_read && n.priority === 'urgent').length;
@@ -233,21 +217,13 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
     notifications,
     config: systemConfig,
     updateConfig,
-    
-    // Actions
     markAsRead,
     markAllAsRead,
-    
-    // Helpers for creating specific notification types
     createTimerAlert,
     createHandoffAlert,
     createPaymentAlert,
     createLeadAlert,
-    
-    // Statistics
     getNotificationStats,
-    
-    // Permissions
     notificationPermission,
     requestPermission: () => Notification.requestPermission().then(setNotificationPermission),
   };

@@ -72,7 +72,7 @@ export const useNotificationsQuery = () => {
       }
     },
     enabled: !!profile?.id,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000,
   });
 };
 
@@ -102,7 +102,7 @@ export const useUnreadNotificationsCount = () => {
       }
     },
     enabled: !!profile?.id,
-    refetchInterval: 10000, // Refetch every 10 seconds for unread count
+    refetchInterval: 10000,
   });
 };
 
@@ -193,7 +193,6 @@ export const useCreateNotificationMutation = () => {
   });
 };
 
-// Real-time notifications hook
 export const useRealtimeNotifications = () => {
   const { profile } = useUser();
   const { toast } = useToast();
@@ -201,7 +200,6 @@ export const useRealtimeNotifications = () => {
 
   const { data: notifications } = useNotificationsQuery();
 
-  // Subscribe to real-time notifications
   React.useEffect(() => {
     if (!profile?.id) return;
 
@@ -218,25 +216,20 @@ export const useRealtimeNotifications = () => {
         (payload) => {
           const newNotification = payload.new as Notification;
           
-          // Show toast for urgent/high priority notifications
           if (['urgent', 'high'].includes(newNotification.priority)) {
             toast({
               title: newNotification.title,
               description: newNotification.message,
               variant: newNotification.priority === 'urgent' ? 'destructive' : 'default',
-              action: newNotification.action_url ? (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => window.location.href = newNotification.action_url!}
-                >
-                  View
-                </Button>
-              ) : undefined,
+              action: newNotification.action_url ? 
+                React.createElement(Button, {
+                  variant: "outline",
+                  size: "sm",
+                  onClick: () => window.location.href = newNotification.action_url!
+                }, "View") : undefined,
             });
           }
 
-          // Refresh queries
           queryClient.invalidateQueries({ queryKey: ['notifications'] });
           queryClient.invalidateQueries({ queryKey: ['notifications-unread-count'] });
         }
