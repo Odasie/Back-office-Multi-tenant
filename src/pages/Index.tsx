@@ -82,7 +82,51 @@ const Index = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">View Tickets</Button>
+              <Button className="w-full" onClick={() => navigate('/dashboard/customer-service')}>
+                View Tickets
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Finance</CardTitle>
+              <CardDescription>
+                Manage revenue and commissions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={() => navigate('/finance')}>
+                Finance Dashboard
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Insights</CardTitle>
+              <CardDescription>
+                Analytics and reports
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={() => navigate('/insights')}>
+                View Insights
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Sales Dashboard</CardTitle>
+              <CardDescription>
+                Track sales performance
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" onClick={() => navigate('/dashboard/sales')}>
+                Sales Dashboard
+              </Button>
             </CardContent>
           </Card>
         </div>

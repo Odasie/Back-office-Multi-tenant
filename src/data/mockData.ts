@@ -445,6 +445,60 @@ export const mockTickets: Ticket[] = [
   }
 ];
 
+// Extended mock data for finance analytics
+export const mockCommissionStructures = [
+  {
+    type: '55% + 10%',
+    baseMargin: 55,
+    additionalMarkup: 10,
+    description: 'Standard premium markup'
+  },
+  {
+    type: '45%',
+    baseMargin: 45,
+    additionalMarkup: 0,
+    description: 'Standard fixed markup'
+  }
+];
+
+export const mockPartnerRates = [
+  { partner: 'Evaneos', rate: 12, type: 'platform_fee' },
+  { partner: 'B2B Agencies', rate: 8, type: 'commission' },
+  { partner: 'Affiliate Partners', rate: 5, type: 'commission' }
+];
+
+// Mock cash flow data for financial projections
+export const mockMonthlyFinancials = [
+  {
+    month: 'Oct 2023',
+    revenue: 850000,
+    costs: 620000,
+    evaneosFees: 102000,
+    netProfit: 128000
+  },
+  {
+    month: 'Nov 2023',
+    revenue: 920000,
+    costs: 680000,
+    evaneosFees: 110400,
+    netProfit: 129600
+  },
+  {
+    month: 'Dec 2023',
+    revenue: 1100000,
+    costs: 780000,
+    evaneosFees: 132000,
+    netProfit: 188000
+  },
+  {
+    month: 'Jan 2024',
+    revenue: 890000,
+    costs: 650000,
+    evaneosFees: 106800,
+    netProfit: 133200
+  }
+];
+
 // Mock KPI Data
 export const mockKpiData: KpiData[] = [
   {
