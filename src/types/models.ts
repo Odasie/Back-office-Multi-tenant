@@ -130,6 +130,7 @@ export interface Task {
   due_date?: string;
   completed_at?: string;
   time_spent: number; // in minutes
+  metadata?: Record<string, any>;
   created_at: string;
   updated_at: string;
   
@@ -182,7 +183,7 @@ export interface Activity {
 // Workflow automation interfaces
 export interface WorkflowAlert {
   id: string;
-  type: 'timer' | 'deadline' | 'escalation' | 'handoff';
+  type: 'timer' | 'deadline' | 'escalation' | 'handoff' | 'system';
   priority: NotificationPriority;
   message: string;
   trigger_date: string;
@@ -228,6 +229,7 @@ export interface EmailTemplate {
 export interface Notification {
   id: string;
   user_id: string;
+  tenant_id: string;
   title: string;
   message: string;
   type: 'lead' | 'task' | 'payment' | 'timer' | 'handoff' | 'system';

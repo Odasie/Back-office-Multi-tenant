@@ -137,13 +137,13 @@ export const useAutomation = (config: Partial<AutomationConfig> = {}) => {
       if (task.due_date) {
         const dueDate = new Date(task.due_date);
         if (now > dueDate) {
-          alerts.push({
-            id: `overdue-${task.id}`,
-            type: 'system',
-            priority: 'urgent',
-            message: `Task "${task.title}" is overdue`,
-            trigger_date: task.due_date,
-            is_active: true,
+        alerts.push({
+          id: `overdue-${task.id}`,
+          type: 'deadline',
+          priority: 'urgent',
+          message: `Task "${task.title}" is overdue`,
+          trigger_date: task.due_date,
+          is_active: true,
             metadata: {
               task_id: task.id,
               days_overdue: Math.floor((now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)),
@@ -304,11 +304,12 @@ System Automation`,
     try {
       await createNotification.mutateAsync({
         user_id: userId,
+        tenant_id: profile?.tenant_id || '',
         title: alert.type === 'timer' ? 'Timer Alert' : 
                alert.type === 'deadline' ? 'Deadline Alert' : 
                alert.type === 'handoff' ? 'Handoff Required' : 'System Alert',
         message: alert.message,
-        type: alert.type,
+        type: alert.type === 'deadline' ? 'system' : alert.type as 'timer' | 'handoff' | 'system',
         priority: alert.priority,
         is_read: false,
         metadata: alert.metadata,

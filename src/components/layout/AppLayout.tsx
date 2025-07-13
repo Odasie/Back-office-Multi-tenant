@@ -4,7 +4,9 @@ import GlobalSearch from '@/components/GlobalSearch';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { User, Settings, LogOut, Menu } from 'lucide-react';
+import { User, Settings, LogOut, Menu, Bell } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,13 +59,21 @@ const AppLayout = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo and Title */}
             <div className="flex items-center space-x-4">
-              <h1 
-                className="text-xl font-bold cursor-pointer hover:text-primary transition-colors"
+              <motion.h1 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl font-bold cursor-pointer bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent hover:scale-105 transition-transform"
                 onClick={() => navigate('/')}
                 role="button"
                 tabIndex={0}
@@ -71,7 +81,7 @@ const AppLayout = () => {
                 aria-label="Navigate to home"
               >
                 Odasie CRM
-              </h1>
+              </motion.h1>
               
               {/* Desktop Navigation */}
               <div className="hidden md:block">
@@ -79,12 +89,21 @@ const AppLayout = () => {
               </div>
             </div>
 
-            {/* Search and User Menu */}
+            {/* Search, Notifications and User Menu */}
             <div className="flex items-center space-x-4">
               {/* Global Search */}
               <div className="hidden sm:block">
                 <GlobalSearch />
               </div>
+
+              {/* Notifications */}
+              <Button variant="ghost" size="sm" className="relative" aria-label="View notifications">
+                <Bell className="h-4 w-4" />
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs">
+                  3
+                </Badge>
+                <span className="sr-only">Notifications</span>
+              </Button>
 
               {/* Mobile Menu */}
               <div className="md:hidden">
@@ -136,13 +155,18 @@ const AppLayout = () => {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Main Content */}
-      <main className="flex-1">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 bg-background">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="container mx-auto px-4 sm:px-6 lg:px-8 py-6"
+        >
           <Outlet />
-        </div>
+        </motion.div>
       </main>
     </div>
   );

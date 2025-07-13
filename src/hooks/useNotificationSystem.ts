@@ -110,11 +110,6 @@ export const useNotificationSystem = (config: Partial<NotificationSystemConfig> 
       title: notification.title,
       description: notification.message,
       variant,
-      action: notification.action_url ? 
-        React.createElement(ToastAction, {
-          altText: "View details",
-          onClick: () => window.location.href = notification.action_url!
-        }, "View") : undefined,
     });
   }, [systemConfig.enableToasts, toast]);
 

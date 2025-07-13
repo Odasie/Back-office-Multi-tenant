@@ -224,11 +224,6 @@ export const useRealtimeNotifications = () => {
               title: newNotification.title,
               description: newNotification.message,
               variant: newNotification.priority === 'urgent' ? 'destructive' : 'default',
-              action: newNotification.action_url ? 
-                React.createElement(ToastAction, {
-                  altText: "View details",
-                  onClick: () => window.location.href = newNotification.action_url!
-                }, "View") : undefined,
             });
           }
 

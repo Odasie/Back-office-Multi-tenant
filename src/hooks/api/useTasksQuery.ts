@@ -129,9 +129,9 @@ export const useTasksQuery = (filters?: TaskApiFilters) => {
         // Add computed fields
         const enrichedTasks = data?.map(task => ({
           ...task,
-          auto_assigned: task.metadata?.auto_assigned || false,
+          auto_assigned: (task as any).metadata?.auto_assigned || false,
           timer_alerts: generateTimerAlerts(task),
-          handoff_history: task.metadata?.handoff_history || [],
+          handoff_history: (task as any).metadata?.handoff_history || [],
         })) || [];
 
         return { data: enrichedTasks, error: null };
