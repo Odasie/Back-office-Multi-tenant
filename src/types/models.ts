@@ -14,6 +14,13 @@ export type TicketStatus = Enums['ticket_status'];
 export type UserRole = Enums['user_role'];
 export type Department = Enums['department'];
 
+// Extended status types for B2B and out-of-Thailand workflows
+export type ExtendedLeadStatus = LeadStatus | 'b2b_approval_pending' | 'third_party_confirmation' | 'supplier_pending' | 'out_of_thailand_processing';
+export type ExtendedTaskStatus = TaskStatus | 'escalated' | 'awaiting_client' | 'supplier_response';
+
+// Priority levels for notifications
+export type NotificationPriority = 'urgent' | 'high' | 'medium' | 'low';
+
 // Core model interfaces
 export interface Tenant {
   id: string;
@@ -63,6 +70,8 @@ export interface Lead {
   assigned_agent?: User;
   days_since_created?: number;
   progress_percentage?: number;
+  auto_tags?: string[];
+  workflow_alerts?: WorkflowAlert[];
 }
 
 export interface Booking {
@@ -128,6 +137,11 @@ export interface Task {
   assignee?: User;
   related_lead?: Lead;
   related_booking?: Booking;
+  
+  // Workflow features
+  auto_assigned?: boolean;
+  timer_alerts?: TimerAlert[];
+  handoff_history?: HandoffRecord[];
 }
 
 export interface Ticket {
@@ -163,6 +177,128 @@ export interface Activity {
   
   // Relations
   user?: User;
+}
+
+// Workflow automation interfaces
+export interface WorkflowAlert {
+  id: string;
+  type: 'timer' | 'deadline' | 'escalation' | 'handoff';
+  priority: NotificationPriority;
+  message: string;
+  trigger_date: string;
+  is_active: boolean;
+  metadata?: Record<string, any>;
+}
+
+export interface TimerAlert {
+  id: string;
+  task_id: string;
+  duration_minutes: number;
+  trigger_time: string;
+  is_triggered: boolean;
+  notification_sent: boolean;
+}
+
+export interface HandoffRecord {
+  id: string;
+  entity_type: 'lead' | 'task' | 'ticket';
+  entity_id: string;
+  from_department: Department;
+  to_department: Department;
+  from_user_id?: string;
+  to_user_id?: string;
+  handoff_reason: string;
+  handoff_date: string;
+  acceptance_date?: string;
+  status: 'pending' | 'accepted' | 'rejected';
+}
+
+// Email template interface
+export interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  body: string;
+  template_type: 'b2b' | 'third_party' | 'customer' | 'internal';
+  variables: string[];
+  is_active: boolean;
+}
+
+// Notification system interfaces
+export interface Notification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  type: 'lead' | 'task' | 'payment' | 'timer' | 'handoff' | 'system';
+  priority: NotificationPriority;
+  is_read: boolean;
+  action_url?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+  expires_at?: string;
+}
+
+// API filter interfaces with enhanced filtering
+export interface ApiFilters {
+  page?: number;
+  limit?: number;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
+  search?: string;
+  date_range?: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface LeadApiFilters extends ApiFilters {
+  status?: LeadStatus[];
+  booking_type?: BookingType[];
+  department?: Department[];
+  assigned_agent_id?: string[];
+  source?: string[];
+  destination?: string[];
+  estimated_value_range?: {
+    min: number;
+    max: number;
+  };
+  auto_tags?: string[];
+}
+
+export interface TaskApiFilters extends ApiFilters {
+  status?: TaskStatus[];
+  priority?: ('low' | 'medium' | 'high' | 'urgent')[];
+  assigned_to?: string[];
+  related_entity_type?: ('lead' | 'booking')[];
+  has_timer_alert?: boolean;
+  is_overdue?: boolean;
+}
+
+// Financial automation interfaces
+export interface CommissionRule {
+  id: string;
+  name: string;
+  booking_type: BookingType;
+  calculation_type: 'percentage' | 'fixed' | 'tiered';
+  base_rate: number; // 55% or 45%
+  markup_rate?: number; // +10% for 55%+10% option
+  evaneos_commission: number; // 12%
+  b2b_commission?: number;
+  conditions?: Record<string, any>;
+  is_active: boolean;
+}
+
+export interface FinancialCalculation {
+  booking_id: string;
+  gross_amount: number;
+  base_commission: number;
+  markup_commission: number;
+  evaneos_commission: number;
+  b2b_commission: number;
+  net_profit: number;
+  margin_percentage: number;
+  calculation_breakdown: Record<string, number>;
 }
 
 // Specialized interfaces
@@ -348,10 +484,21 @@ export interface DragDropLead extends Lead {
   isDragging?: boolean;
 }
 
+export interface DragDropTask extends Task {
+  isDragging?: boolean;
+}
+
 export interface LeadColumn {
   id: LeadStatus;
   title: string;
   leads: DragDropLead[];
+  color: string;
+}
+
+export interface TaskColumn {
+  id: TaskStatus;
+  title: string;
+  tasks: DragDropTask[];
   color: string;
 }
 
