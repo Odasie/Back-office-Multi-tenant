@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { AuthCallback } from '@/components/auth/AuthCallback';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -20,7 +19,6 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [hasHashParams, setHasHashParams] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -28,14 +26,6 @@ export default function Auth() {
       redirectUserToDashboard();
     }
   }, [user]);
-
-  useEffect(() => {
-    // Check for hash parameters on component mount
-    const hash = window.location.hash;
-    if (hash && (hash.includes('access_token') || hash.includes('error'))) {
-      setHasHashParams(true);
-    }
-  }, []);
 
   const redirectUserToDashboard = async () => {
     if (!user) return;
@@ -153,11 +143,6 @@ export default function Auth() {
       setLoading(false);
     }
   };
-
-  // If we have hash parameters, show the AuthCallback component
-  if (hasHashParams) {
-    return <AuthCallback onComplete={() => setHasHashParams(false)} />;
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
