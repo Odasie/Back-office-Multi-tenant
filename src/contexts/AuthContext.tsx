@@ -11,6 +11,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, metadata?: any) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
+  verifyEmail: (accessToken: string, refreshToken?: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/auth`;
       
       const { error } = await supabase.auth.signUp({
         email,
@@ -128,6 +129,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const verifyEmail = async (accessToken: string, refreshToken?: string) => {
+    try {
+      const { data, error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken || '',
+      });
+
+      if (error) {
+        toast({
+          title: "Email verification failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
+
+      if (data.user) {
+        toast({
+          title: "Email confirmed!",
+          description: "Your account has been successfully verified.",
+        });
+      }
+
+      return { error: null };
+    } catch (error: any) {
+      toast({
+        title: "Email verification failed",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+      return { error };
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -153,7 +188,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithGoogle = async () => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/auth`;
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -189,6 +224,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signUp,
     signOut,
     signInWithGoogle,
+    verifyEmail,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

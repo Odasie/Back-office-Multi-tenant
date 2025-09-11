@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,9 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { AuthCallback } from '@/components/auth/AuthCallback';
 
 export default function Auth() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -19,13 +21,23 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [showCallback, setShowCallback] = useState(false);
 
   useEffect(() => {
+    // Check for hash parameters indicating email confirmation
+    const hashParams = new URLSearchParams(location.hash.substring(1));
+    const hasAuthParams = hashParams.get('access_token') || hashParams.get('error');
+    
+    if (hasAuthParams) {
+      setShowCallback(true);
+      return;
+    }
+
     if (user) {
       // User is already logged in, redirect based on their department
       redirectUserToDashboard();
     }
-  }, [user]);
+  }, [user, location.hash]);
 
   const redirectUserToDashboard = async () => {
     if (!user) return;
@@ -143,6 +155,15 @@ export default function Auth() {
       setLoading(false);
     }
   };
+
+  // Show callback component if we're handling email confirmation
+  if (showCallback) {
+    return (
+      <AuthCallback 
+        onVerificationComplete={() => setShowCallback(false)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
